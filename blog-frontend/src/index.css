@@ -1,1 +1,129 @@
 @import "tailwindcss";
+
+/* Tailwind v4 dark mode variant */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Custom scrollbar for sidebar and main content */
+aside::-webkit-scrollbar,
+main::-webkit-scrollbar {
+  width: 8px;
+}
+
+aside::-webkit-scrollbar-track,
+main::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.dark aside::-webkit-scrollbar-track,
+.dark main::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+aside::-webkit-scrollbar-thumb,
+main::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.dark aside::-webkit-scrollbar-thumb,
+.dark main::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+aside::-webkit-scrollbar-thumb:hover,
+main::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.dark aside::-webkit-scrollbar-thumb:hover,
+.dark main::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Firefox scrollbar */
+aside,
+main {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f1f1f1;
+}
+
+.dark aside,
+.dark main {
+  scrollbar-color: #4b5563 #1f2937;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent body scroll when sidebar is open on mobile */
+body {
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Better focus styles */
+*:focus {
+  outline: none;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Toast animations */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Select dropdown dark mode styling */
+select {
+  color-scheme: light;
+}
+
+.dark select {
+  color-scheme: dark;
+}
+
+select option {
+  background-color: white;
+  color: #111827;
+}
+
+.dark select option {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+/* Ensure textarea and input have proper styling in dark mode */
+textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="search"] {
+  color-scheme: light;
+}
+
+.dark textarea,
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="url"],
+.dark input[type="search"] {
+  color-scheme: dark;
+}

@@ -28,16 +28,26 @@ const AuthProvider = ({ children }) => {
 
   // 📝 Login function
   const login = async (credentials)=>{
-    const data = await loginAPI(credentials);
-    setUser(data.data);
-    return data;
+    try {
+      const data = await loginAPI(credentials);
+      setUser(data.data);
+      return data;
+    } catch (error) {
+      // Re-throw the error so the component can handle it
+      throw error;
+    }
   }
 
   // 📝 Signup function
   const register = async (credentials)=>{
-    const data = await signupAPI(credentials);
-    setUser(data.data);
-    return data;
+    try {
+      const data = await signupAPI(credentials);
+      setUser(data.data);
+      return data;
+    } catch (error) {
+      // Re-throw the error so the component can handle it
+      throw error;
+    }
   }
 
 

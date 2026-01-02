@@ -5,9 +5,7 @@ function App() {
   
   return (
     <Layout>
-      <div className="font-opensans">
-        <HomePage/>
-      </div>
+      <HomePage/>
     </Layout>
   )
 }

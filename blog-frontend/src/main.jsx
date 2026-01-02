@@ -3,8 +3,11 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from 'react-router-dom'
-import { LoginPage, SingUpPage, ProfilePage } from "./pages/index.js"
+import { LoginPage, SingUpPage, ProfilePage, WriteBlogPage, BlogReadPage } from "./pages/index.js"
 import AuthProvider from './context/auth/AuthProvider.jsx'
+import { SidebarProvider } from './context/SidebarContext.jsx'
+import { ThemeProvider } from './context/ThemeContext.jsx'
+import { ToastProvider } from './context/ToastContext.jsx'
 import ProtectedRoutes from './routes/ProtectedRoutes.jsx'
 
 
@@ -14,8 +17,10 @@ const router = createBrowserRouter(
       <Route path='/' element={<App/>}/>
       <Route path='/login' element={<LoginPage/>}/>
       <Route path='/register' element={<SingUpPage/>}/>
+      <Route path='/blog/:slug' element={<BlogReadPage/>}/>
       <Route element={<ProtectedRoutes/>}>
          <Route path='/profile' element={<ProfilePage/>}/>
+         <Route path='/write' element={<WriteBlogPage/>}/>
       </Route>
       <Route path='*' element={<h1 className='text-3xl font-bold'>404 - Page Not Found</h1>}/>
     </>
@@ -25,7 +30,13 @@ const router = createBrowserRouter(
 
 
 createRoot(document.getElementById('root')).render(
-  <AuthProvider>
-    <RouterProvider router={router} />
-  </AuthProvider>,
+  <ThemeProvider>
+    <AuthProvider>
+      <SidebarProvider>
+        <ToastProvider>
+          <RouterProvider router={router} />
+        </ToastProvider>
+      </SidebarProvider>
+    </AuthProvider>
+  </ThemeProvider>,
 )
