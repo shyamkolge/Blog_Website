@@ -11,17 +11,23 @@ const userSchema = new mongoose.Schema(
 
     firstName: {
       type: String,
-      required: [true, "First name is required"],
+      required: function() {
+        return !this.googleId; // Required only if not using Google OAuth
+      },
     },
 
     lastName: {
       type: String,
-      required: [true, "Last name is required"],
+      required: function() {
+        return !this.googleId; // Required only if not using Google OAuth
+      },
     },
 
     age: {
       type: Number,
-      required: [true, "Age is required"],
+      required: function() {
+        return !this.googleId; // Required only if not using Google OAuth
+      },
     },
     
     roles: {
@@ -32,8 +38,11 @@ const userSchema = new mongoose.Schema(
     
     username: {
       type: String,
-      required: [true, "Username is required"],
+      required: function() {
+        return !this.googleId; // Required only if not using Google OAuth
+      },
       unique: true,
+      sparse: true, // Allows multiple null values
       lowercase: true,
     },
 
@@ -46,8 +55,16 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: function() {
+        return !this.googleId; // Password required only if not using Google OAuth
+      },
       minlength: 6,
+    },
+
+    googleId: {
+      type: String,
+      sparse: true, // Allows multiple null values but enforces uniqueness for non-null values
+      unique: true,
     },
 
     bookmarkedBlogs: [
@@ -80,9 +97,9 @@ userSchema.pre(/^find/, function (next) {
   this.find({ isActive: { $ne: false } });
 });
 
-// Hash the password before the user is saved
+// Hash the password before the user is saved (only if password exists)
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return;
+  if (!this.isModified("password") || !this.password) return;
 
   this.password = await bcrypt.hash(this.password, 12);
 });

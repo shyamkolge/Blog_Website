@@ -3,6 +3,8 @@ import authRoutes from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import cors from "cors";
 import globalErrorHandler from './middlewares/errorHandling.js';
+import session from 'express-session';
+import passport from './config/passport.js';
 
 
 const app = express();
@@ -19,6 +21,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
+
+// Session configuration for Passport (needed for OAuth flow)
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "your-secret-key-change-in-production",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: "lax",
+    },
+  })
+);
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Sample route
 app.get('/', (req, res) => {

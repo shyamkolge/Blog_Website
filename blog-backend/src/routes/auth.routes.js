@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { loginUser, resetPassword, signUpUser, logout, updatePassword, forgotPassword, getMe  } from '../controllers/auth.controller.js';
+import { loginUser, resetPassword, signUpUser, logout, updatePassword, forgotPassword, getMe, googleCallback  } from '../controllers/auth.controller.js';
 import {loginSchema, forgotPasswordSchema, signupSchema, updatePasswordSchema, resetPasswordSchema } from '../utils/auth/authValidator.js'
 import { validate } from '../middlewares/inputValidate.js';
 import isLoggedIn from '../middlewares/auth.middleware.js';
 import upload from '../middlewares/multer.middleware.js';
+import passport from '../config/passport.js';
 
 const router = Router();
 
@@ -29,6 +30,23 @@ router.patch(
   "/reset-password/:token",
   validate(resetPasswordSchema),
   resetPassword
+);
+
+// Google OAuth routes
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: `${process.env.FRONTEND_URL || "http://localhost:5173"}/login?error=google_auth_failed`,
+    session: true, // Need session for OAuth flow
+  }),
+  googleCallback
 );
 
 export default router;

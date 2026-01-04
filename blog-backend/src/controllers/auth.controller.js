@@ -280,6 +280,25 @@ const getMe = asyncHandler(async (req, res, next) => {
   });
 });
 
+// Google OAuth callback handler
+const googleCallback = asyncHandler(async (req, res, next) => {
+  if (!req.user) {
+    return res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5173"}/login?error=google_auth_failed`);
+  }
+
+  const token = await req.user.generateAccessToken();
+  
+  const options = {
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax", // Changed to lax for OAuth redirects
+  };
+
+  res.cookie("token", token, options);
+  res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5173"}/?google_auth=success`);
+});
+
 export {
   signUpUser,
   loginUser,
@@ -287,5 +306,6 @@ export {
   forgotPassword,
   resetPassword,
   updatePassword,
-  getMe
+  getMe,
+  googleCallback
 };
