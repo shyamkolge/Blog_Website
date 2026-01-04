@@ -5,6 +5,7 @@ import WriteBlogPage from "./WriteBlogPage";
 import BlogReadPage from "./BlogReadPage";
 import PageNotFound from "./PageNotFound";
 import BookMarkedBlogs from "./BookMarkedBlogs";
+import TrendingBlogsPage from "./TrendingBlogsPage";
+import FollowingPage from "./FollowingPage";
 
-
-export {LoginPage, SingUpPage, ProfilePage, WriteBlogPage, BlogReadPage, PageNotFound, BookMarkedBlogs};
+export {LoginPage, SingUpPage, ProfilePage, WriteBlogPage, BlogReadPage, FollowingPage,PageNotFound, BookMarkedBlogs, TrendingBlogsPage};

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from 'react-router-dom'
-import { LoginPage, SingUpPage, ProfilePage, WriteBlogPage, BlogReadPage , PageNotFound, BookMarkedBlogs } from "./pages/index.js"
+import { LoginPage, SingUpPage, ProfilePage, WriteBlogPage, BlogReadPage , FollowingPage, PageNotFound, BookMarkedBlogs , TrendingBlogsPage} from "./pages/index.js"
 import AuthProvider from './context/auth/AuthProvider.jsx'
 import { SidebarProvider } from './context/SidebarContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
@@ -20,11 +20,13 @@ const router = createBrowserRouter(
       <Route path='/login' element={<LoginPage/>}/>
       <Route path='/register' element={<SingUpPage/>}/>
       <Route path='/blog/:slug' element={<Layout><BlogReadPage/></Layout>}/>
-      <Route path='/bookmarks' element={<Layout><BookMarkedBlogs/></Layout>}/>
       <Route element={<ProtectedRoutes/>}>
          <Route path='/profile' element={<ProfilePage/>}/>
          <Route path='/write' element={<WriteBlogPage/>}/>
       </Route>
+         <Route path='/bookmarks' element={<Layout><BookMarkedBlogs/></Layout>}/>
+         <Route path='/trending' element={<Layout><TrendingBlogsPage/></Layout>}/>
+         <Route path='/following' element={<Layout><FollowingPage/></Layout>}/>
       <Route path='*' element={<PageNotFound/>} />
     </>
   )
