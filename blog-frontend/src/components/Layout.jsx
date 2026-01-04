@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
         {/* Mobile Sidebar Overlay */}
         {sidebarOpen && (
           <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden transition-opacity duration-300"
+            className="fixed inset-0 bg-black-500 bg-opacity-50 z-40 lg:hidden transition-opacity duration-300"
             onClick={closeSidebar}
             aria-hidden="true"
           />

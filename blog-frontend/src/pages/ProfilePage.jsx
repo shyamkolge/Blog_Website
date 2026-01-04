@@ -15,6 +15,7 @@ import {
   FiClock,
   FiEye,
   FiTrash2,
+  FiArrowLeft,
   FiSettings
 } from "react-icons/fi";
 
@@ -122,12 +123,21 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="dark:bg-gray-900  max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Back button  */}
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-4 text-gray-600 hover:text-gray-900 flex items-center space-x-2"  
+      >
+        <FiArrowLeft className="w-4 h-4" /> 
+        <span>Back</span>
+      </button>
+
       {/* Profile Header */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           {/* Profile Image */}
-          <div className="relative">
+          <div className="relative dark:text-white">
             {user.profilePhoto ? (
               <img
                 src={user.profilePhoto}
@@ -149,30 +159,30 @@ const ProfilePage = () => {
           </div>
 
           {/* User Info */}
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="flex-1 text-center md:text-left ">
+            <h1 className="text-3xl font-bold dark:text-white text-gray-900 mb-2">
               {user.firstName} {user.lastName}
             </h1>
-            <p className="text-gray-600 mb-4">@{user.username}</p>
-            <p className="text-gray-500 text-sm mb-4">{user.email}</p>
+            <p className=" dark:text-white text-gray-600 mb-4">@{user.username}</p>
+            <p className="dark:text-white text-gray-500 text-sm mb-4">{user.email}</p>
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">{stats.totalPosts}</div>
-                <div className="text-sm text-gray-600">Posts</div>
+                <div className="text-2xl font-bold dark:text-white text-gray-900">{stats.totalPosts}</div>
+                <div className="text-sm dark:text-white text-gray-600">Posts</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">{stats.totalLikes}</div>
-                <div className="text-sm text-gray-600">Likes</div>
+                <div className="text-2xl font-bold dark:text-white text-gray-900">{stats.totalLikes}</div>
+                <div className="text-sm dark:text-white text-gray-600">Likes</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">{stats.totalComments}</div>
-                <div className="text-sm text-gray-600">Comments</div>
+                <div className="text-2xl font-bold dark:text-white   text-gray-900">{stats.totalComments}</div>
+                <div className="text-sm dark:text-white text-gray-600">Comments</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">{stats.totalViews}</div>
-                <div className="text-sm text-gray-600">Views</div>
+                <div className="text-2xl font-bold dark:text-white text-gray-900">{stats.totalViews}</div>
+                <div className="text-sm dark:text-white text-gray-600">Views</div>
               </div>
             </div>
           </div>

@@ -53,7 +53,7 @@ const Header = () => {
               className="text-2xl font-bold cursor-pointer text-black dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition"
               onClick={() => navigate("/")}
             >
-              Medium
+              Topicology
             </div>
           </div>
 
@@ -100,7 +100,7 @@ const Header = () => {
                   </button>
                   <button
                     className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition"
-                    onClick={() => navigate("/register")}
+                    onClick={() => navigate("/login")}
                   >
                     Get started
                   </button>

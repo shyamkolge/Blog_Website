@@ -3,7 +3,7 @@ import SingUpPage from "./auth/SignUpPage";
 import ProfilePage from "./ProfilePage";
 import WriteBlogPage from "./WriteBlogPage";
 import BlogReadPage from "./BlogReadPage";
+import PageNotFound from "./PageNotFound";
 
 
-
-export {LoginPage, SingUpPage, ProfilePage, WriteBlogPage, BlogReadPage};
+export {LoginPage, SingUpPage, ProfilePage, WriteBlogPage, BlogReadPage, PageNotFound};

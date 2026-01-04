@@ -116,7 +116,7 @@ export default function Signup() {
 
       await register(form);
       setLoading(false);
-      navigate("/profile");
+      navigate("/");
     } catch (err) {
       setError(err.message || "Failed to sign up. Please try again.");
       setLoading(false);
@@ -132,9 +132,9 @@ export default function Signup() {
             className="text-4xl font-bold text-black cursor-pointer mb-2"
             onClick={() => navigate("/")}
           >
-            Medium
+            Topicology
           </h1>
-          <p className="text-gray-600 text-lg">Join Medium today</p>
+          <p className="text-gray-600 text-lg">Join Topicology today</p>
         </div>
 
         {/* Signup Card */}

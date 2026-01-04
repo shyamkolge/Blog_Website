@@ -4,129 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { FiClock, FiUser, FiHeart, FiMessageCircle, FiEye } from 'react-icons/fi'
 import useAuth from '../hooks/useAuth'
 
-// Sample blog data for testing
-const sampleBlogs = [
-  {
-    _id: '1',
-    tittle: 'Getting Started with React Hooks',
-    content: 'React Hooks revolutionized the way we write React components. They allow us to use state and other React features without writing a class. In this comprehensive guide, we\'ll explore useState, useEffect, useContext, and more. Learn how to build modern React applications with functional components and hooks.',
-    slug: 'getting-started-with-react-hooks',
-    author: {
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'johndoe',
-      profilePhoto: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop'
-    },
-    category: { name: 'Technology', slug: 'technology' },
-    featureImages: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=400&fit=crop',
-    likeCount: 42,
-    commentCount: 12,
-    readCount: 1250,
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    visibility: 'public'
-  },
-  {
-    _id: '2',
-    tittle: 'The Art of Clean Code',
-    content: 'Writing clean code is an art form that every developer should master. Clean code is easy to read, understand, and maintain. It follows best practices, has meaningful names, and is well-structured. In this article, we\'ll discuss the principles of clean code and how to apply them in your daily programming.',
-    slug: 'the-art-of-clean-code',
-    author: {
-      firstName: 'Jane',
-      lastName: 'Smith',
-      username: 'janesmith',
-      profilePhoto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
-    },
-    category: { name: 'Programming', slug: 'programming' },
-    featureImages: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=400&fit=crop',
-    likeCount: 89,
-    commentCount: 23,
-    readCount: 3420,
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    visibility: 'public'
-  },
-  {
-    _id: '3',
-    tittle: 'Building Responsive Web Designs',
-    content: 'Responsive web design is crucial in today\'s multi-device world. Learn how to create websites that look great on all screen sizes using modern CSS techniques like Flexbox, Grid, and media queries. We\'ll cover mobile-first design principles and best practices for creating fluid, adaptable layouts.',
-    slug: 'building-responsive-web-designs',
-    author: {
-      firstName: 'Mike',
-      lastName: 'Johnson',
-      username: 'mikejohnson',
-      profilePhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'
-    },
-    category: { name: 'Design', slug: 'design' },
-    featureImages: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=400&fit=crop',
-    likeCount: 156,
-    commentCount: 45,
-    readCount: 5670,
-    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    visibility: 'public'
-  },
-  {
-    _id: '4',
-    tittle: 'Understanding JavaScript Closures',
-    content: 'Closures are one of the most powerful features of JavaScript, yet they can be confusing for many developers. A closure gives you access to an outer function\'s scope from an inner function. In this deep dive, we\'ll explore how closures work, when to use them, and common patterns.',
-    slug: 'understanding-javascript-closures',
-    author: {
-      firstName: 'Sarah',
-      lastName: 'Williams',
-      username: 'sarahwilliams',
-      profilePhoto: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop'
-    },
-    category: { name: 'Programming', slug: 'programming' },
-    featureImages: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop',
-    likeCount: 203,
-    commentCount: 67,
-    readCount: 8920,
-    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-    visibility: 'public'
-  },
-  {
-    _id: '5',
-    tittle: 'Introduction to Node.js and Express',
-    content: 'Node.js has become the go-to platform for building server-side applications with JavaScript. Combined with Express, it provides a powerful framework for creating RESTful APIs and web applications. This tutorial will guide you through setting up your first Node.js server and building a simple API.',
-    slug: 'introduction-to-nodejs-and-express',
-    author: {
-      firstName: 'David',
-      lastName: 'Brown',
-      username: 'davidbrown',
-      profilePhoto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop'
-    },
-    category: { name: 'Technology', slug: 'technology' },
-    featureImages: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=400&fit=crop',
-    likeCount: 178,
-    commentCount: 34,
-    readCount: 4560,
-    createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-    visibility: 'public'
-  },
-  {
-    _id: '6',
-    tittle: 'CSS Grid vs Flexbox: When to Use What',
-    content: 'Both CSS Grid and Flexbox are powerful layout tools, but they serve different purposes. Flexbox is great for one-dimensional layouts, while Grid excels at two-dimensional layouts. Learn when to use each and how to combine them for the best results in your web projects.',
-    slug: 'css-grid-vs-flexbox-when-to-use-what',
-    author: {
-      firstName: 'Emily',
-      lastName: 'Davis',
-      username: 'emilydavis',
-      profilePhoto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop'
-    },
-    category: { name: 'Design', slug: 'design' },
-    featureImages: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&h=400&fit=crop',
-    likeCount: 134,
-    commentCount: 28,
-    readCount: 3890,
-    createdAt: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
-    visibility: 'public'
-  }
-]
+
 
 const HomePage = () => {
   const [blogs, setBlogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [useSampleData, setUseSampleData] = useState(false)
   const [likedBlogs, setLikedBlogs] = useState(new Set())
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -147,17 +30,11 @@ const HomePage = () => {
       const response = await getAllBlogsAPI()
       if (response.success && response.data && response.data.length > 0) {
         setBlogs(response.data)
-        setUseSampleData(false)
-      } else {
-        // If no blogs from API, use sample data
-        setBlogs(sampleBlogs)
-        setUseSampleData(true)
-      }
+      } 
     } catch (err) {
       // On error, use sample data
+      setError('Failed to load blogs. Please try again later.')
       console.error('Error fetching blogs:', err)
-      setBlogs(sampleBlogs)
-      setUseSampleData(true)
     } finally {
       setLoading(false)
     }
@@ -231,23 +108,15 @@ const HomePage = () => {
   return (
     <div className="w-full">
       {/* Hero Section */}
-       {/* <div className="mb-12 text-center">
-         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+       <div className="mb-12 text-center">
+         <h1 className="text-4xl md:text-5xl font-bold dark:text-white text-gray-900 mb-4">
            Discover stories, thinking, and expertise
          </h1>
          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
            Explore articles from writers on any topic
          </p>
-       </div> */}
+       </div>
 
-      {/* Sample Data Notice */}
-      {useSampleData && (
-        <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p className="text-blue-700 dark:text-blue-300 text-sm text-center">
-            📝 Showing sample blogs. Connect to your backend to see real data.
-          </p>
-        </div>
-      )}
 
       {/* Blogs Grid */}
       {blogs.length === 0 ? (
@@ -261,9 +130,8 @@ const HomePage = () => {
             <article
               key={blog._id}
               className="border-b border-gray-200 dark:border-gray-800 pb-8 cursor-pointer hover:opacity-90 transition overflow-hidden"
-              onClick={() => navigate(`/blog/${blog.slug}`)}
             >
-              <div className={`flex flex-col ${blog.featureImages ? 'md:flex-row' : ''} gap-6 w-full`}>
+              <div className={`flex flex-col ${blog.featureImages ? 'md:flex-row' : ''} gap-6 w-full`} >
                 {/* Blog Content */}
                 <div className={`${blog.featureImages ? 'flex-1 min-w-0' : 'w-full'} overflow-hidden`}>
                   {/* Author & Date */}
@@ -290,7 +158,7 @@ const HomePage = () => {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3 hover:text-gray-700 dark:hover:text-gray-300 transition break-words">
+                  <h2  onClick={() => navigate(`/blog/${blog.slug}`)} className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3 hover:text-gray-700 dark:hover:text-gray-300 transition break-words">
                     {blog.tittle}
                   </h2>
 

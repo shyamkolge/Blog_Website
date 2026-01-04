@@ -43,7 +43,7 @@ export default function Login() {
             className="text-4xl font-bold text-black cursor-pointer mb-2"
             onClick={() => navigate("/")}
           >
-            Medium
+            Topicology
           </h1>
           <p className="text-gray-600 text-lg">Welcome back</p>
         </div>
@@ -157,7 +157,7 @@ export default function Login() {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">New to Medium?</span>
+                <span className="px-4 bg-white text-gray-500">New to Topicology?</span>
               </div>
             </div>
           </div>

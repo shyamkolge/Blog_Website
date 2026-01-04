@@ -250,8 +250,8 @@ const BlogReadPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
+      <div className="bg-white dark:bg-gray-900 flex items-center justify-center min-h-[68vh] ">
+        <div className="text-center h-screen w-screen">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-black dark:border-white mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Loading blog...</p>
         </div>
@@ -261,7 +261,7 @@ const BlogReadPage = () => {
 
   if (error || !blog) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="bg-white dark:bg-gray-900 flex items-center justify-center min-h-[68vh]">
         <div className="text-center">
           <p className="text-red-600 dark:text-red-400 mb-4">{error || "Blog not found"}</p>
           <button
@@ -276,7 +276,7 @@ const BlogReadPage = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="bg-gray-50 dark:bg-gray-900 w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
@@ -532,10 +532,10 @@ const BlogReadPage = () => {
       </div>
 
       {/* Related Posts Section (Optional - can be added later) */}
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">More from {blog.category?.name}</h2>
         <p className="text-gray-600 dark:text-gray-400">Related posts coming soon...</p>
-      </div>
+      </div> */}
     </div>
   );
 };

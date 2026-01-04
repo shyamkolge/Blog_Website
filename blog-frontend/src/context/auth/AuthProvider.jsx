@@ -7,7 +7,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔁 Persistent Login
+  // Persistent Login
   useEffect(()=>{
     const fetchUser = async () => {
       try {
@@ -28,6 +28,7 @@ const AuthProvider = ({ children }) => {
 
   // 📝 Login function
   const login = async (credentials)=>{
+    // eslint-disable-next-line no-useless-catch
     try {
       const data = await loginAPI(credentials);
       setUser(data.data);
@@ -40,6 +41,7 @@ const AuthProvider = ({ children }) => {
 
   // 📝 Signup function
   const register = async (credentials)=>{
+    // eslint-disable-next-line no-useless-catch
     try {
       const data = await signupAPI(credentials);
       setUser(data.data);
