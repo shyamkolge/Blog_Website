@@ -20,10 +20,10 @@ const router = createBrowserRouter(
       <Route path='/login' element={<LoginPage/>}/>
       <Route path='/register' element={<SingUpPage/>}/>
       <Route path='/blog/:slug' element={<Layout><BlogReadPage/></Layout>}/>
+      <Route path='/bookmarks' element={<Layout><BookMarkedBlogs/></Layout>}/>
       <Route element={<ProtectedRoutes/>}>
          <Route path='/profile' element={<ProfilePage/>}/>
          <Route path='/write' element={<WriteBlogPage/>}/>
-         <Route path='/bookmarks' element={<Layout><BookMarkedBlogs/></Layout>}/>
       </Route>
       <Route path='*' element={<PageNotFound/>} />
     </>

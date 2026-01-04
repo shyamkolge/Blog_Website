@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { getAllBlogsAPI, checkUserLikedAPI } from '../api/blog.api'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { FiClock, FiUser, FiHeart, FiMessageCircle, FiEye } from 'react-icons/fi'
 import useAuth from '../hooks/useAuth'
-
-
+import { useToast } from '../context/ToastContext'
 
 const HomePage = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,10 +12,24 @@ const HomePage = () => {
   const [likedBlogs, setLikedBlogs] = useState(new Set())
   const { user } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const toast = useToast()
+  const hasShownGoogleAuthToast = useRef(false)
 
   useEffect(() => {
     fetchBlogs()
   }, [])
+
+  // Handle Google OAuth redirect - only show toast once
+  useEffect(() => {
+    const googleAuth = searchParams.get('google_auth')
+    if (googleAuth === 'success' && !hasShownGoogleAuthToast.current) {
+      hasShownGoogleAuthToast.current = true
+      toast.success('Successfully signed in with Google!')
+      // Remove query parameter from URL
+      navigate('/', { replace: true })
+    }
+  }, [searchParams, toast, navigate])
 
   useEffect(() => {
     if (user && blogs.length > 0) {

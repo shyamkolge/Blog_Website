@@ -49,7 +49,7 @@ const ProtectedRoutes = () => {
 
           {/* Title */}
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 text-center">
-            Access Denied
+            Login Required
           </h2>
           
           {/* Description */}
