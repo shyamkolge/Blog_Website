@@ -15,7 +15,7 @@ const createBlog = asyncHandler(async (req, res) => {
   let featureImages = null;
 
   if (req.file) {
-    const uploadRes = await uploadOnCloudinary(req.file.path);
+    const uploadRes = await uploadOnCloudinary(req.file.buffer);
     if (uploadRes?.secure_url) {
       featureImages = uploadRes.secure_url;
     }
