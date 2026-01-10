@@ -283,7 +283,7 @@ const getMe = asyncHandler(async (req, res, next) => {
 // Google OAuth callback handler
 const googleCallback = asyncHandler(async (req, res, next) => {
   if (!req.user) {
-    return res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5173"}/login?error=google_auth_failed`);
+    return res.redirect(`${process.env.FRONTEND_URL}/login?error=google_auth_failed`);
   }
 
   const token = await req.user.generateAccessToken();
@@ -296,7 +296,7 @@ const googleCallback = asyncHandler(async (req, res, next) => {
   };
 
   res.cookie("token", token, options);
-  res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5173"}/?google_auth=success`);
+  res.redirect(`${process.env.FRONTEND_URL}/?google_auth=success`);
 });
 
 export {
