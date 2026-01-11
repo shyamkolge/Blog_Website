@@ -137,7 +137,7 @@
 
 </div>
 
-> 📌 **Note:** Add your screenshots to the `screenshots/` folder and update the paths above.
+> 📌 **Note:** You can visite the live link.
 
 ---
 
@@ -375,9 +375,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📧 Contact
 
-**Your Name** - [@LinkedIn](linkedin.com/in/shyam-kolge) - shyamnkolge2020@gmail.com
+**Your Name** - [LinkedIn](https://www.linkedin.com/in/shyam-kolge/) - shyamnkolge2020@gmail.com
 
-Project Link: [https://github.com/yourusername/blog-website](https://blogwebsite-lime-delta.vercel.app/)
+Project Link: [Website Link](https://blogwebsite-lime-delta.vercel.app/)
 
 ---
 
