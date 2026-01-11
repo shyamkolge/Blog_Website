@@ -1,6 +1,7 @@
 import AuthContext from "./AuthContext";
 import { useEffect, useState } from "react";
 import {loginAPI , logoutAPI, signupAPI, getMeApi } from '../../api/auth.api'
+import AppLoader from "../../pages/AppLoader";
 
 const AuthProvider = ({ children }) => {
 
@@ -11,6 +12,7 @@ const AuthProvider = ({ children }) => {
   useEffect(()=>{
     const fetchUser = async () => {
       try {
+        setLoading(true);
         const data = await getMeApi();
         setUser(data.data);
       } catch (error) {
@@ -19,7 +21,6 @@ const AuthProvider = ({ children }) => {
       } finally {
         setLoading(false);
       }
-
     };
 
     fetchUser();
@@ -69,7 +70,7 @@ const AuthProvider = ({ children }) => {
         logout
       }}
     >
-      {children}
+    {loading ? <AppLoader /> : children}
     </AuthContext.Provider>
   );
 };
