@@ -5,6 +5,7 @@ import likeModel from "../models/blog.like.model.js";
 import commentModel from "../models/blog.comments.model.js";
 import uploadOnCloudinary from "../services/cloudinary.js";
 import { userModel } from "../models/user.model.js";
+import { updateBlogTrendingScore } from "../services/trendingService.js";
 
 // Create blog
 const createBlog = asyncHandler(async (req, res) => {
@@ -107,6 +108,189 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   return res.json(new ApiResponse(200, blogs, "Blogs fetched successfully"));
 });
 
+
+/**
+ * Production-Grade Trending Algorithm
+ * 
+ * Formula: TrendingScore = (W1 × likes + W2 × comments + W3 × shares + W4 × reads) × TimeDecay
+ * 
+ * Weights:
+ * - Likes: 3 (high intent signal)
+ * - Comments: 5 (highest engagement)
+ * - Shares: 4 (viral potential)
+ * - Reads: 1 (passive engagement)
+ * 
+ * Time Decay: Uses exponential decay based on post age
+ * - Half-life of ~3 days (posts lose half their score every 3 days)
+ */
+const getTrendingBlogs = asyncHandler(async (req, res) => {
+  const { 
+    limit = 10, 
+    page = 1,
+    timeWindow = 7,  // Days to consider for trending
+    category 
+  } = req.query;
+
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+  
+  // Scoring weights
+  const WEIGHTS = {
+    likes: 3,
+    comments: 5,
+    shares: 4,
+    reads: 1
+  };
+  
+  // Half-life in days (score halves every 3 days)
+  const HALF_LIFE_DAYS = 3;
+  const DECAY_CONSTANT = Math.log(2) / (HALF_LIFE_DAYS * 24 * 60 * 60 * 1000);
+
+  // Build match query
+  const matchQuery = {
+    visibility: 'public',
+    createdAt: { 
+      $gte: new Date(Date.now() - parseInt(timeWindow) * 24 * 60 * 60 * 1000) 
+    }
+  };
+
+  // Add category filter if provided
+  if (category) {
+    const categoryDoc = await BlogCategoryController.findOne({ slug: category });
+    if (categoryDoc) {
+      matchQuery.category = categoryDoc._id;
+    }
+  }
+
+  const now = new Date();
+
+  const trendingBlogs = await blogModel.aggregate([
+    // Stage 1: Match public blogs within time window
+    { $match: matchQuery },
+    
+    // Stage 2: Calculate trending score with time decay
+    {
+      $addFields: {
+        // Age in milliseconds
+        ageMs: { $subtract: [now, "$createdAt"] },
+        
+        // Raw engagement score (weighted sum)
+        rawScore: {
+          $add: [
+            { $multiply: [{ $ifNull: ["$likeCount", 0] }, WEIGHTS.likes] },
+            { $multiply: [{ $ifNull: ["$commentCount", 0] }, WEIGHTS.comments] },
+            { $multiply: [{ $ifNull: ["$shareCount", 0] }, WEIGHTS.shares] },
+            { $multiply: [{ $ifNull: ["$readCount", 0] }, WEIGHTS.reads] }
+          ]
+        }
+      }
+    },
+    
+    // Stage 3: Apply time decay using exponential decay formula
+    {
+      $addFields: {
+        trendingScore: {
+          $multiply: [
+            "$rawScore",
+            {
+              $exp: {
+                $multiply: [-DECAY_CONSTANT, "$ageMs"]
+              }
+            }
+          ]
+        }
+      }
+    },
+    
+    // Stage 4: Add velocity bonus (engagement per hour)
+    {
+      $addFields: {
+        engagementVelocity: {
+          $cond: {
+            if: { $gt: ["$ageMs", 0] },
+            then: {
+              $divide: [
+                "$rawScore",
+                { $divide: ["$ageMs", 3600000] } // Convert to hours
+              ]
+            },
+            else: "$rawScore"
+          }
+        }
+      }
+    },
+    
+    // Stage 5: Final score combines trending score and velocity
+    {
+      $addFields: {
+        finalScore: {
+          $add: [
+            "$trendingScore",
+            { $multiply: ["$engagementVelocity", 0.1] } // 10% velocity bonus
+          ]
+        }
+      }
+    },
+    
+    // Stage 6: Sort by final score
+    { $sort: { finalScore: -1 } },
+    
+    // Stage 7: Pagination
+    { $skip: skip },
+    { $limit: parseInt(limit) },
+    
+    // Stage 8: Lookup author details
+    {
+      $lookup: {
+        from: "users",
+        localField: "author",
+        foreignField: "_id",
+        as: "author",
+        pipeline: [
+          { $project: { firstName: 1, lastName: 1, username: 1, profilePhoto: 1, email: 1 } }
+        ]
+      }
+    },
+    { $unwind: { path: "$author", preserveNullAndEmptyArrays: true } },
+    
+    // Stage 9: Lookup category details
+    {
+      $lookup: {
+        from: "blogcategories",
+        localField: "category",
+        foreignField: "_id",
+        as: "category",
+        pipeline: [
+          { $project: { name: 1, slug: 1 } }
+        ]
+      }
+    },
+    { $unwind: { path: "$category", preserveNullAndEmptyArrays: true } },
+    
+    // Stage 10: Clean up response (remove internal scoring fields)
+    {
+      $project: {
+        ageMs: 0,
+        rawScore: 0,
+        engagementVelocity: 0
+      }
+    }
+  ]);
+
+  // Get total count for pagination
+  const totalCount = await blogModel.countDocuments(matchQuery);
+
+  return res.json(new ApiResponse(200, {
+    blogs: trendingBlogs,
+    pagination: {
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalCount / parseInt(limit)),
+      totalBlogs: totalCount,
+      hasMore: skip + trendingBlogs.length < totalCount
+    }
+  }, "Trending blogs fetched successfully"));
+});
+
+
 // Get single blog by slug
 const getBlogBySlug = asyncHandler(async (req, res) => {
   const { slug } = req.params;
@@ -137,6 +321,11 @@ const getBlogBySlug = asyncHandler(async (req, res) => {
   if (!hasViewed) {
     blog.readCount = (blog.readCount || 0) + 1;
     await blog.save();
+    
+    // Update trending score asynchronously (non-blocking)
+    updateBlogTrendingScore(blog._id).catch(err => 
+      console.error('Failed to update trending score:', err)
+    );
     
     // Set a cookie to track this view (expires in 1 hour to allow re-counting after some time)
     res.cookie(viewKey, 'true', {
@@ -213,12 +402,22 @@ const toggleLike = asyncHandler(async (req, res) => {
     blog.likeCount = Math.max(0, (blog.likeCount || 0) - 1);
     await blog.save();
     
+    // Update trending score asynchronously
+    updateBlogTrendingScore(blogId).catch(err => 
+      console.error('Failed to update trending score:', err)
+    );
+    
     return res.json(new ApiResponse(200, { liked: false, likeCount: blog.likeCount }, "Blog unliked successfully"));
   } else {
     // Like - add the like
     await likeModel.create({ postId: blogId, user: userId });
     blog.likeCount = (blog.likeCount || 0) + 1;
     await blog.save();
+    
+    // Update trending score asynchronously
+    updateBlogTrendingScore(blogId).catch(err => 
+      console.error('Failed to update trending score:', err)
+    );
     
     return res.json(new ApiResponse(200, { liked: true, likeCount: blog.likeCount }, "Blog liked successfully"));
   }
@@ -266,6 +465,11 @@ const addComment = asyncHandler(async (req, res) => {
   // Update blog comment count
   blog.commentCount = (blog.commentCount || 0) + 1;
   await blog.save();
+
+  // Update trending score asynchronously
+  updateBlogTrendingScore(blogId).catch(err => 
+    console.error('Failed to update trending score:', err)
+  );
 
   // Populate comment with user info
   const populatedComment = await commentModel.findById(comment._id)
@@ -388,5 +592,6 @@ export {
   getBlogComments,
   deleteComment,
   getBookmarkedBlogs,
-  bookmarkBlog
+  bookmarkBlog,
+  getTrendingBlogs
 };

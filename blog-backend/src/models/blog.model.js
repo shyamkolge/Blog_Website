@@ -35,10 +35,12 @@ const blogSchema = new mongoose.Schema({
     likeCount: {
         type: Number,
         default: 0,
+        index: true, // Index for trending queries
     },
     commentCount: {
         type: Number,
         default: 0,
+        index: true, // Index for trending queries
     },
     shareCount: {
         type: Number,
@@ -47,17 +49,36 @@ const blogSchema = new mongoose.Schema({
     readCount: {
         type: Number,
         default: 0,
+        index: true, // Index for trending queries
+    },
+    // Cached trending score (updated periodically)
+    trendingScore: {
+        type: Number,
+        default: 0,
+        index: true, // Index for fast sorting
+    },
+    // Track when trending score was last calculated
+    trendingScoreUpdatedAt: {
+        type: Date,
+        default: Date.now,
     },
 
     createdAt: {
         type: Date, 
         default: Date.now,
+        index: true, // Index for time-based queries
     },
     updatedAt: {
         type: Date,
         default: Date.now,
     },
-})
+});
+
+// Compound index for trending queries (visibility + createdAt + trendingScore)
+blogSchema.index({ visibility: 1, createdAt: -1, trendingScore: -1 });
+
+// Compound index for category-based trending
+blogSchema.index({ category: 1, visibility: 1, trendingScore: -1 });
 
 
 const blogModel = mongoose.model("Blog", blogSchema);
