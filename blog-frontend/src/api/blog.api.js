@@ -96,6 +96,15 @@ export const getBookMarkedPostsAPI = async () => {
   return response.data;
 };
 
+// Get trending blogs
+export const getTrendingBlogsAPI = async (options = {}) => {
+  const { page = 1, limit = 10, timeWindow = 7, category } = options;
+  const params = new URLSearchParams({ page, limit, timeWindow });
+  if (category) params.append('category', category);
+  
+  const response = await api.get(`/v1/blogs/trending?${params}`);
+  return response.data;
+};
 
 // Create category
 export const getBlogsByCategoryAPI = async (slug) => {

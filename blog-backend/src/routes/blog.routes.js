@@ -14,7 +14,8 @@ import {
   getBlogComments,
   deleteComment,
   bookmarkBlog,
-  getBookmarkedBlogs
+  getBookmarkedBlogs,
+  getTrendingBlogs
 } from "../controllers/blog.controller.js"
 import isLoggedIn from "../middlewares/auth.middleware.js";
 import optionalAuth from "../middlewares/optionalAuth.middleware.js";
@@ -28,6 +29,7 @@ const router = Router();
 
 // Access control routes
 router.get("/", getAllBlogs);
+router.get("/trending", getTrendingBlogs);  
 router.get("/categories", getAllCategories);
 router.get("/categories/:slug", getBlogsByCategory);
 router.get("/slug/:slug", getBlogBySlug);
